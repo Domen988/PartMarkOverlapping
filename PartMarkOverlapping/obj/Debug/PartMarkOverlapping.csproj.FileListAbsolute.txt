@@ -1,0 +1,9 @@
+C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\PartMarkOverlapping.exe.config
+C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\PartMarkOverlapping.exe
+C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\PartMarkOverlapping.pdb
+C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.csprojResolveAssemblyReference.cache
+C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.Form1.resources
+C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.Properties.Resources.resources
+C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.csproj.GenerateResource.Cache
+C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.exe
+C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.pdb
