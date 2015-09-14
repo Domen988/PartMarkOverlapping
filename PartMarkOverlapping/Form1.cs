@@ -18,37 +18,33 @@ namespace PartMarkOverlapping
         public Form1()
         {
             InitializeComponent();
-            var adOpt = "";
-            Tekla.Structures.TeklaStructuresSettings.GetAdvancedOption("XS_USE_ASSEMBLY_NUMBER_FOR", ref adOpt);
-            if (adOpt != "MAIN_PART")
-            {
-                MessageBox.Show("Advanced option 'XS_USE_ASSEMBLY_NUMBER_FOR' is not set to 'MAIN_PART'.\n\noverlapping will exit.", "Critical warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             TSM.Model model = new TSM.Model();
             
-            Tekla.Structures.Model.ModelObjectEnumerator selectedObjects = model.GetModelObjectSelector().GetAllObjectsWithType(TSM.ModelObject.ModelObjectEnum.UNKNOWN);
+            TSM.ModelObjectEnumerator selectedObjects = model.GetModelObjectSelector().GetAllObjectsWithType(TSM.ModelObject.ModelObjectEnum.UNKNOWN);
             
             // select object types for selector 
             System.Type[] objectTypes = new System.Type[1];
-            objectTypes.SetValue(typeof(TSM.Part), 0);
+            objectTypes.SetValue(typeof(TSM.Beam), 0);
 
             // select all objects with types
             selectedObjects = model.GetModelObjectSelector().GetAllObjectsWithType(objectTypes);
-
+            
             if (!CheckNumberingStatus(selectedObjects))
             {
-                MessageBox.Show("Numbering is not up-to-date!", "Part Mark Overlapping", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Numbering is not up-to-date.", "Part Mark Overlapping", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            MessageBox.Show(selectedObjects.GetSize().ToString());
+            //
+            // blatant solution - make a new enumerator just for numbering check
+            //
 
             while (selectedObjects.MoveNext())
             {
-
                 var currentObject = selectedObjects.Current;
                 var nameOfObject = "";
                 var profileOfObject = "";
@@ -68,7 +64,6 @@ namespace PartMarkOverlapping
 
                 // check if profile is flat profile
                 if (profileOfObject.StartsWith("FL") || profileOfObject.StartsWith("PL")) isFlatProfile = true;
-
             }
         }
 
@@ -103,6 +98,17 @@ namespace PartMarkOverlapping
                 }
             }
             return true;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            var adOpt = "";
+            Tekla.Structures.TeklaStructuresSettings.GetAdvancedOption("XS_USE_ASSEMBLY_NUMBER_FOR", ref adOpt);
+            if (adOpt != "MAIN_PART")
+            {
+                MessageBox.Show("Advanced option 'XS_USE_ASSEMBLY_NUMBER_FOR' is not set to 'MAIN_PART'.", "Part Mark Overlapping", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
         }
     }
 }
