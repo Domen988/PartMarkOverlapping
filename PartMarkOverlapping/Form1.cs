@@ -7,9 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections;
 
-using Tekla.Structures;
+using TS = Tekla.Structures;
 using TSM = Tekla.Structures.Model;
+
+using TeklaMacroBuilder;
 
 namespace PartMarkOverlapping
 {
@@ -28,44 +31,94 @@ namespace PartMarkOverlapping
             
             // select object types for selector 
             System.Type[] objectTypes = new System.Type[1];
-            objectTypes.SetValue(typeof(TSM.Beam), 0);
+            objectTypes.SetValue(typeof(TSM.Part), 0);
 
-            // select all objects with types
             selectedObjects = model.GetModelObjectSelector().GetAllObjectsWithType(objectTypes);
-            
+
+            // numbering check
             if (!CheckNumberingStatus(selectedObjects))
             {
                 MessageBox.Show("Numbering is not up-to-date.", "Part Mark Overlapping", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            MessageBox.Show(selectedObjects.GetSize().ToString());
-            //
-            // blatant solution - make a new enumerator just for numbering check
-            //
 
+            selectedObjects.Reset();
+
+            // populating dictionary with id's, part prefix and part position number
+            Dictionary<TS.Identifier, Tuple<string, int, bool>> partDict = new Dictionary<TS.Identifier, Tuple<string, int, bool>>();
             while (selectedObjects.MoveNext())
             {
-                var currentObject = selectedObjects.Current;
-                var nameOfObject = "";
-                var profileOfObject = "";
-                var prefixAssemblyOfObject = "";
-                var prefixPartOfObject = "";
-                bool isFlatProfile = false;
-                // get name of the object
-                currentObject.GetReportProperty("NAME", ref nameOfObject);
-                MessageBox.Show(nameOfObject);
+                TSM.Part part = selectedObjects.Current as TSM.Part;
+                string partMark = part.GetPartMark();
+                string[] splittedMark = partMark.Split('\\');
+                int partPosNum = Int32.Parse(splittedMark[1]);
+                Tuple<string, int, bool> partTuple = new Tuple<string, int, bool>(splittedMark[0], partPosNum, false);
+                partDict.Add(part.Identifier, partTuple);
+            }
+            
+            // creates dictionary by prefixes / lists of part numbers
+            Dictionary<string, List<int>> positionsDict = new Dictionary<string, List<int>>();
+            foreach(KeyValuePair<TS.Identifier, Tuple<string, int, bool>> entry in partDict)
+            {
+                if (positionsDict.ContainsKey(entry.Value.Item1))
+                {
+                    List<int> list = new List<int>();
+                    list = positionsDict[entry.Value.Item1];
+                    if (!list.Contains(entry.Value.Item2))
+                    {
+                        list.Add(entry.Value.Item2);
+                    }
+                    positionsDict[entry.Value.Item1] = list;
+                }
+                else
+                {
+                    List<int> list = new List<int>();
+                    list.Add(entry.Value.Item2);
+                    positionsDict.Add(entry.Value.Item1, list);
+                }
+            }
 
-                // get the profile of the object
-                currentObject.GetReportProperty("PROFILE", ref profileOfObject);
+            // check the dictionary by prefixes and determine the parts that need new numbers
+            foreach (KeyValuePair<TS.Identifier, Tuple<string, int, bool>> entry in partDict)
+            {
+                if (Char.IsUpper(entry.Value.Item1.ToString()[0]))
+                {
+                    string testKey = entry.Value.Item1.ToString().ToLower();
+                    if (positionsDict.ContainsKey(testKey))
+                    {
+                        if (positionsDict[testKey].Contains(entry.Value.Item2))
+                        {
+                            int newNum = 0;
+                            while(true)
+                            {
+                                newNum++;
+                                if (positionsDict[testKey].Contains(newNum) || positionsDict[testKey.ToUpper()].Contains(newNum))
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    ArrayList aList = new ArrayList();
+                                    TSM.Object part = model.SelectModelObject(entry.Key);
+                                    TSM.UI.ModelObjectSelector selector = new TSM.UI.ModelObjectSelector();
+                                    aList.Add(part);
+                                    selector.Select(aList);
 
-                // get the prefix of the object
-                currentObject.GetReportProperty("ASSEMBLY_DEFAULT_PREFIX", ref prefixAssemblyOfObject);
-                currentObject.GetReportProperty("PART_PREFIX", ref prefixPartOfObject);
-
-                // check if profile is flat profile
-                if (profileOfObject.StartsWith("FL") || profileOfObject.StartsWith("PL")) isFlatProfile = true;
+                                    new MacroBuilder().
+                                        Callback("acmdAssignPositionNumber", "part", "main_frame").
+                                        ValueChange("assign_part_number", "Position", newNum.ToString()).
+                                        PushButton("AssignPB", "assign_part_number").
+                                        PushButton("CancelPB", "assign_part_number").
+                                        Run();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
+
 
         private void button2_Click(object sender, EventArgs e)
         {

@@ -7,3 +7,4 @@ C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debu
 C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.csproj.GenerateResource.Cache
 C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.exe
 C:\Users\domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.pdb
+C:\Users\Domen\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\MacroBuilder.dll
