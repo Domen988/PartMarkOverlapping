@@ -50,7 +50,7 @@ namespace PartMarkOverlapping
             {
                 TSM.Part part = selectedObjects.Current as TSM.Part;
                 string partMark = part.GetPartMark();
-                string[] splittedMark = partMark.Split('\\');
+                string[] splittedMark = partMark.Split('/');
                 int partPosNum = Int32.Parse(splittedMark[1]);
                 Tuple<string, int, bool> partTuple = new Tuple<string, int, bool>(splittedMark[0], partPosNum, false);
                 partDict.Add(part.Identifier, partTuple);
@@ -81,6 +81,10 @@ namespace PartMarkOverlapping
             // check the dictionary by prefixes and determine the parts that need new numbers
             foreach (KeyValuePair<TS.Identifier, Tuple<string, int, bool>> entry in partDict)
             {
+                if (entry.Value.Item1 == "F" && entry.Value.Item2 == 10)
+                {
+                    var test = "";
+                }
                 // check if current part is secondary - if prefix has capital letters
                 if (Char.IsUpper(entry.Value.Item1.ToString()[0]))
                 {
@@ -100,6 +104,10 @@ namespace PartMarkOverlapping
                                 {
                                     continue;
                                 }
+                                if (entry.Value.Item1 == "F" && entry.Value.Item2 == 10)
+                                {
+                                    //MessageBox.Show(positionsDict[entry.Value.Item1].Contains(newNum).ToString());
+                                }
                                 else
                                 {
                                     // select part - clumsy, could it be improved?
@@ -117,6 +125,10 @@ namespace PartMarkOverlapping
                                         PushButton("CancelPB", "assign_part_number").
                                         Run();
 
+                                    if (entry.Value.Item1=="F" && newNum==10)
+                                    {
+                                        //continue;
+                                    }
                                     // add newly created part mark to positionsDict
                                     positionsDict[entry.Value.Item1].Add(newNum);
 

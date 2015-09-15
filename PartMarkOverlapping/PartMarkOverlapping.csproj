@@ -45,13 +45,13 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tekla.Structures, Version=20.1.0.0, Culture=neutral, PublicKeyToken=2f04dbe497b71114, processorArchitecture=MSIL">
+    <Reference Include="Tekla.Structures, Version=20.0.0.0, Culture=neutral, PublicKeyToken=2f04dbe497b71114, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\TeklaStructuresLearning\20.1\nt\bin\plugins\Tekla.Structures.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\TeklaStructures\20.0\nt\bin\applications\Tekla\Model\Tekla.Structures.dll</HintPath>
     </Reference>
-    <Reference Include="Tekla.Structures.Model, Version=20.1.0.0, Culture=neutral, PublicKeyToken=2f04dbe497b71114, processorArchitecture=MSIL">
+    <Reference Include="Tekla.Structures.Model, Version=20.0.0.0, Culture=neutral, PublicKeyToken=2f04dbe497b71114, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\TeklaStructuresLearning\20.1\nt\bin\plugins\Tekla.Structures.Model.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\TeklaStructures\20.0\nt\bin\applications\Tekla\Model\Tekla.Structures.Model.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
