@@ -81,35 +81,45 @@ namespace PartMarkOverlapping
             // check the dictionary by prefixes and determine the parts that need new numbers
             foreach (KeyValuePair<TS.Identifier, Tuple<string, int, bool>> entry in partDict)
             {
+                // check if current part is secondary - if prefix has capital letters
                 if (Char.IsUpper(entry.Value.Item1.ToString()[0]))
                 {
                     string testKey = entry.Value.Item1.ToString().ToLower();
+                    // check if main parts with same letter exist
                     if (positionsDict.ContainsKey(testKey))
                     {
+                        // check if same number is used for main and secondaries
                         if (positionsDict[testKey].Contains(entry.Value.Item2))
                         {
                             int newNum = 0;
+                            // loop searches for new number and ads it to positionsDict
                             while(true)
                             {
                                 newNum++;
-                                if (positionsDict[testKey].Contains(newNum) || positionsDict[testKey.ToUpper()].Contains(newNum))
+                                if (positionsDict[testKey].Contains(newNum) || positionsDict[entry.Value.Item1].Contains(newNum))
                                 {
                                     continue;
                                 }
                                 else
                                 {
+                                    // select part - clumsy, could it be improved?
                                     ArrayList aList = new ArrayList();
                                     TSM.Object part = model.SelectModelObject(entry.Key);
                                     TSM.UI.ModelObjectSelector selector = new TSM.UI.ModelObjectSelector();
                                     aList.Add(part);
                                     selector.Select(aList);
 
+                                    // use Macrobuilder dll to change numbering
                                     new MacroBuilder().
                                         Callback("acmdAssignPositionNumber", "part", "main_frame").
                                         ValueChange("assign_part_number", "Position", newNum.ToString()).
                                         PushButton("AssignPB", "assign_part_number").
                                         PushButton("CancelPB", "assign_part_number").
                                         Run();
+
+                                    // add newly created part mark to positionsDict
+                                    positionsDict[entry.Value.Item1].Add(newNum);
+
                                     break;
                                 }
                             }
