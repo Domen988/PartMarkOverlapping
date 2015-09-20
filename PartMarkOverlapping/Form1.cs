@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 using TS = Tekla.Structures;
 using TSM = Tekla.Structures.Model;
@@ -26,7 +27,6 @@ namespace PartMarkOverlapping
         private void button1_Click(object sender, EventArgs e)
         {
             TSM.Model model = new TSM.Model();
-            
             TSM.ModelObjectEnumerator selectedObjects = model.GetModelObjectSelector().GetAllObjectsWithType(TSM.ModelObject.ModelObjectEnum.UNKNOWN);
             
             // select object types for selector 
@@ -45,96 +45,67 @@ namespace PartMarkOverlapping
             selectedObjects.Reset();
 
             // populating dictionary with id's, part prefix and part position number
-            Dictionary<TS.Identifier, Tuple<string, int, bool>> partDict = new Dictionary<TS.Identifier, Tuple<string, int, bool>>();
+            List<PartCustom> partDictionary = new List<PartCustom>();
             while (selectedObjects.MoveNext())
             {
                 TSM.Part part = selectedObjects.Current as TSM.Part;
-                string partMark = part.GetPartMark();
-                string[] splittedMark = partMark.Split('/');
-                int partPosNum = Int32.Parse(splittedMark[1]);
-                Tuple<string, int, bool> partTuple = new Tuple<string, int, bool>(splittedMark[0], partPosNum, false);
-                partDict.Add(part.Identifier, partTuple);
+                PartCustom currentPart = new PartCustom(part);
+                partDictionary.Add(currentPart);
             }
-            
-            // creates dictionary by prefixes / lists of part numbers
-            Dictionary<string, List<int>> positionsDict = new Dictionary<string, List<int>>();
-            foreach(KeyValuePair<TS.Identifier, Tuple<string, int, bool>> entry in partDict)
-            {
-                if (positionsDict.ContainsKey(entry.Value.Item1))
-                {
-                    List<int> list = new List<int>();
-                    list = positionsDict[entry.Value.Item1];
-                    if (!list.Contains(entry.Value.Item2))
-                    {
-                        list.Add(entry.Value.Item2);
-                    }
-                    positionsDict[entry.Value.Item1] = list;
-                }
-                else
-                {
-                    List<int> list = new List<int>();
-                    list.Add(entry.Value.Item2);
-                    positionsDict.Add(entry.Value.Item1, list);
-                }
-            }
+
 
             // check the dictionary by prefixes and determine the parts that need new numbers
-            foreach (KeyValuePair<TS.Identifier, Tuple<string, int, bool>> entry in partDict)
+            // select parts in model
+            ArrayList partList = new ArrayList();
+
+            foreach (PartCustom part in partDictionary)
             {
-                if (entry.Value.Item1 == "F" && entry.Value.Item2 == 10)
+                needsToChange(part);
+                if (part.NeedsToChange)
                 {
-                    var test = "";
+                    partList.Add(model.SelectModelObject(part.Identifier));
                 }
-                // check if current part is secondary - if prefix has capital letters
-                if (Char.IsUpper(entry.Value.Item1.ToString()[0]))
+            }
+            Tekla.Structures.Model.UI.ModelObjectSelector mos = new Tekla.Structures.Model.UI.ModelObjectSelector();
+            mos.Select(partList);
+
+            // change parts and select them in model
+            foreach (PartCustom part in partDictionary)
+            {
+                if (part.NeedsToChange)
                 {
-                    string testKey = entry.Value.Item1.ToString().ToLower();
-                    // check if main parts with same letter exist
-                    if (positionsDict.ContainsKey(testKey))
+                    int newNum = 0;
+                    // loop searches for new number and ads it to positionsDict
+                    while (true)
                     {
-                        // check if same number is used for main and secondaries
-                        if (positionsDict[testKey].Contains(entry.Value.Item2))
+                        newNum++;
+                        string oppositePrefix = changeCapitalization(part.Prefix);
+                        if (PartCustom.positionsDictionary[oppositePrefix].Contains(newNum) || PartCustom.positionsDictionary[part.Prefix].Contains(newNum))
                         {
-                            int newNum = 0;
-                            // loop searches for new number and ads it to positionsDict
-                            while(true)
-                            {
-                                newNum++;
-                                if (positionsDict[testKey].Contains(newNum) || positionsDict[entry.Value.Item1].Contains(newNum))
-                                {
-                                    continue;
-                                }
-                                if (entry.Value.Item1 == "F" && entry.Value.Item2 == 10)
-                                {
-                                    //MessageBox.Show(positionsDict[entry.Value.Item1].Contains(newNum).ToString());
-                                }
-                                else
-                                {
-                                    // select part - clumsy, could it be improved?
-                                    ArrayList aList = new ArrayList();
-                                    TSM.Object part = model.SelectModelObject(entry.Key);
-                                    TSM.UI.ModelObjectSelector selector = new TSM.UI.ModelObjectSelector();
-                                    aList.Add(part);
-                                    selector.Select(aList);
+                            continue;
+                        }
+                        else
+                        {
+                            // select part - clumsy, could it be improved?
+                            ArrayList aList = new ArrayList();
+                            TSM.Object tPart = model.SelectModelObject(part.Identifier);
+                            TSM.UI.ModelObjectSelector selector = new TSM.UI.ModelObjectSelector();
+                            aList.Add(tPart);
+                            selector.Select(aList);
 
-                                    // use Macrobuilder dll to change numbering
-                                    new MacroBuilder().
-                                        Callback("acmdAssignPositionNumber", "part", "main_frame").
-                                        ValueChange("assign_part_number", "Position", newNum.ToString()).
-                                        PushButton("AssignPB", "assign_part_number").
-                                        PushButton("CancelPB", "assign_part_number").
-                                        Run();
+                            // use Macrobuilder dll to change numbering
+                            new MacroBuilder().
+                                Callback("acmdAssignPositionNumber", "part", "main_frame").
+                                ValueChange("assign_part_number", "Position", newNum.ToString()).
+                                PushButton("AssignPB", "assign_part_number").
+                                PushButton("CancelPB", "assign_part_number").
+                                Run();
 
-                                    if (entry.Value.Item1=="F" && newNum==10)
-                                    {
-                                        //continue;
-                                    }
-                                    // add newly created part mark to positionsDict
-                                    positionsDict[entry.Value.Item1].Add(newNum);
+                            // add newly created part mark to positionsDict
+                            PartCustom.positionsDictionary[part.Prefix].Add(newNum);
 
-                                    break;
-                                }
-                            }
+
+                            break;
                         }
                     }
                 }
@@ -173,6 +144,53 @@ namespace PartMarkOverlapping
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// changes strings with one capital letter to all lower case and strings without capital letter to all upper case.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns>returns transformed string</returns>
+        static string changeCapitalization(string str)
+        {
+            string result = "";
+            if (string.IsNullOrEmpty(str))
+            {
+                result = "";
+                return result;
+            }
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (char.IsUpper(str[i]))
+                {
+                    result = str.ToLower();
+                    break;
+                }
+                result = str.ToUpper();
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// checks if current part needs to change part number
+        /// </summary>
+        /// <param name="part"></param>
+        static void needsToChange(PartCustom part)
+        {
+            // check if current part is secondary 
+            if (!part.IsMainPart)
+            {
+                string oppositePrefix = changeCapitalization(part.Prefix);
+                // check if main parts with same letter exist
+                if (PartCustom.positionsDictionary.ContainsKey(oppositePrefix))
+                {
+                    // check if same number is used for main and secondaries
+                    if (PartCustom.positionsDictionary[oppositePrefix].Contains(part.Number))
+                    {
+                        part.NeedsToChange = true;
+                    }
+                }
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
