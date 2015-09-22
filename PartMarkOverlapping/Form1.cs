@@ -101,6 +101,11 @@ namespace PartMarkOverlapping
                                 PushButton("CancelPB", "assign_part_number").
                                 Run();
 
+                            bool ismacrounning = true;
+                            while (ismacrounning)
+                            {
+                                ismacrounning = TSM.Operations.Operation.IsMacroRunning();
+                            }
                             // add newly created part mark to positionsDict
                             PartCustom.positionsDictionary[part.Prefix].Add(newNum);
 
