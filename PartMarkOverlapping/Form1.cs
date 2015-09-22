@@ -72,6 +72,10 @@ namespace PartMarkOverlapping
             // change parts and select them in model
             foreach (PartCustom part in partDictionary)
             {
+                if (part.Prefix=="F"||part.Number==10)
+                {
+                    string nothing = "";
+                }
                 if (part.NeedsToChange)
                 {
                     int newNum = 0;
@@ -84,6 +88,7 @@ namespace PartMarkOverlapping
                         {
                             continue;
                         }
+                        // problem je nekje tu
                         else
                         {
                             // select part - clumsy, could it be improved?
@@ -93,14 +98,26 @@ namespace PartMarkOverlapping
                             aList.Add(tPart);
                             selector.Select(aList);
 
+                            string MacrosPath = "";
+                            TS.TeklaStructuresSettings.GetAdvancedOption("XS_MACRO_DIRECTORY", ref MacrosPath);
+                            
+
                             // use Macrobuilder dll to change numbering
+                            MacroBuilder macroBuilder = new MacroBuilder();
+                            macroBuilder.Callback("acmdAssignPositionNumber", "part", "main_frame");
+                            macroBuilder.ValueChange("assign_part_number", "Position", newNum.ToString());
+                            macroBuilder.PushButton("AssignPB", "assign_part_number");
+                            macroBuilder.PushButton("CancelPB", "assign_part_number");
+                            macroBuilder.Run();
+
+                            /*
                             new MacroBuilder().
                                 Callback("acmdAssignPositionNumber", "part", "main_frame").
                                 ValueChange("assign_part_number", "Position", newNum.ToString()).
                                 PushButton("AssignPB", "assign_part_number").
                                 PushButton("CancelPB", "assign_part_number").
                                 Run();
-
+                                */
                             bool ismacrounning = true;
                             while (ismacrounning)
                             {

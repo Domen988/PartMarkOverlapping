@@ -40,3 +40,4 @@ C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.Form1.resources
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.Properties.Resources.resources
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.csproj.GenerateResource.Cache
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\MacroBuilder.pdb
