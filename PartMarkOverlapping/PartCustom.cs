@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using System.Text.RegularExpressions;
 
 using TS = Tekla.Structures;
 using TSM = Tekla.Structures.Model;
+using TeklaMacroBuilder;
 
 namespace PartMarkOverlapping
 {
@@ -27,11 +27,13 @@ namespace PartMarkOverlapping
         private bool isMainPart;
 
         public static Dictionary<string, List<int>> positionsDictionary = new Dictionary<string, List<int>>();
+        public static List<PartCustom> partList = new List<PartCustom>();
+        public static Dictionary<string, Tuple<string, int>> prefixChanges = new Dictionary<string, Tuple<string, int>>();
 
         /// <summary>
-        /// Custom part constructor - PartCustom can only be instantiated with a TeklaStructuresModel.Part object.
+        /// Custom part constructor. Adds the part to the partList and also creates positionsDictionary.
         /// </summary>
-        /// <param name="part"></param>
+        /// <param name="part">TeklaStructuresModel.Part object</param>
         public PartCustom(TSM.Part part)
         {
             string partMark = part.GetPartMark();
@@ -60,7 +62,7 @@ namespace PartMarkOverlapping
 
             this.identifier = part.Identifier;
             this.prefix = actualPartPrefix;
-            this.number = Int32.Parse(actualPartNumber);
+            this.number = int.Parse(actualPartNumber);
             this.needsToChange = false;
             part.GetReportProperty("MAIN_PART", ref isMainPart);
             this.isMainPart = Convert.ToBoolean(isMainPart);
@@ -79,31 +81,204 @@ namespace PartMarkOverlapping
                 list.Add(this.number);
                 positionsDictionary.Add(this.prefix, list);
             }
+
+            // add part to part list - list of all model parts
+            partList.Add(this);
         }
 
         /// <summary>
-        /// property that gives access to variables.
+        /// Selects every object in the model.
+        /// </summary>
+        /// <param name="model">Tekla structures model</param>
+        public static void SelectAll(TSM.Model model)
+        {
+            TSM.ModelObjectEnumerator selectedObjects = model.GetModelObjectSelector().GetAllObjectsWithType(TSM.ModelObject.ModelObjectEnum.UNKNOWN);
+            System.Type[] objectTypes = new System.Type[1];
+            objectTypes.SetValue(typeof(TSM.Part), 0);
+
+            selectedObjects = model.GetModelObjectSelector().GetAllObjectsWithType(objectTypes);
+
+            // creating instances of PartCustom class
+            while (selectedObjects.MoveNext())
+            {
+                TSM.Part part = selectedObjects.Current as TSM.Part;
+                PartCustom currentPart = new PartCustom(part);
+            }
+        }
+
+        /// <summary>
+        /// searches for parts that need to change part number
+        /// </summary>
+        /// <param name="part"></param>
+        public static void FindPartsToBeRenumbered()
+        {
+            foreach (PartCustom part in partList)
+            {
+                // check if current part is secondary 
+                if (!part.IsMainPart)
+                {
+                    string oppositePrefix = ChangeCapitalization(part.Prefix);
+                    // check if main parts with same letter exist
+                    if (positionsDictionary.ContainsKey(oppositePrefix))
+                    {
+                        // check if same number is used for main and secondaries
+                        if (positionsDictionary[oppositePrefix].Contains(part.Number))
+                        {
+                            part.NeedsToChange = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// select all parts that need to be renumbered
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>quantity of selected parts</returns>
+        public static int SelectPartsToBeRenumbered(TSM.Model model)
+        {
+            ArrayList partsToBeSelected = new ArrayList();
+
+            foreach (PartCustom part in partList)
+            {
+                if (part.NeedsToChange)
+                {
+                    partsToBeSelected.Add(model.SelectModelObject(part.Identifier));
+                }
+            }
+            TSM.UI.ModelObjectSelector mos = new TSM.UI.ModelObjectSelector();
+            mos.Select(partsToBeSelected);
+            return mos.GetSelectedObjects().GetSize();
+        }
+
+        /// <summary>
+        /// Renumbers part that need renumbering.
+        /// </summary>
+        /// <param name="model">Tekla.Structures.Model model</param>
+        public static void RenumberParts(TSM.Model model)
+        {
+            foreach (PartCustom part in partList)
+            {
+                if (part.NeedsToChange)
+                {
+                    int newNum;
+                    string partCurrentPosition;
+                    string oppositePrefix = ChangeCapitalization(part.Prefix);
+
+                    partCurrentPosition = part.prefix.ToString() + part.number.ToString();
+
+                    // checks if a part with same position has already been assigned a new number. If so, it gives the current part the same number, if not if gives part a new number.
+                    // all changes are collected in prefixChanges dictionary.
+                    if (!prefixChanges.ContainsKey(partCurrentPosition))
+                    {
+                        int maxOppositeNumber = positionsDictionary[oppositePrefix].Max();
+                        int maxNumber = positionsDictionary[part.Prefix].Max();
+
+                        newNum = Math.Max(maxNumber, maxOppositeNumber) + 1;
+
+                        // adds new number to prefixChanges dictionary
+                        Tuple<string, int> tuple = new Tuple<string, int>(part.prefix, newNum);
+                        prefixChanges.Add(partCurrentPosition, tuple);
+                    }
+                    else
+                    {
+                        newNum = prefixChanges[partCurrentPosition].Item2;
+                    }
+
+                    //MessageBox.Show(maxOppositeNumber.ToString() + "" + maxNumber.ToString() + "" + newNum.ToString());
+
+                    // select part - clumsy, could it be improved?
+                    ArrayList aList = new ArrayList();
+                    TSM.Object tPart = model.SelectModelObject(part.Identifier);
+                    TSM.UI.ModelObjectSelector selector = new TSM.UI.ModelObjectSelector();
+                    aList.Add(tPart);
+                    selector.Select(aList);
+
+                    // use Macrobuilder dll to change numbering
+                    MacroBuilder macroBuilder = new MacroBuilder();
+                    macroBuilder.Callback("acmdAssignPositionNumber", "part", "main_frame");
+                    macroBuilder.ValueChange("assign_part_number", "Position", newNum.ToString());
+                    macroBuilder.PushButton("AssignPB", "assign_part_number");
+                    macroBuilder.PushButton("CancelPB", "assign_part_number");
+                    macroBuilder.Run();
+
+                    bool ismacrounning = true;
+                    while (ismacrounning)
+                    {
+                        ismacrounning = TSM.Operations.Operation.IsMacroRunning();
+                    }
+
+                    // add newly created part mark to positionsDict
+                    positionsDictionary[part.Prefix].Add(newNum);
+                }
+            }
+        }
+
+        /// <summary>
+        /// changes strings with one capital letter to all lower case and strings without capital letter to all upper case.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns>returns transformed string</returns>
+        internal static string ChangeCapitalization(string str)
+        {
+            string result = "";
+            if (string.IsNullOrEmpty(str))
+            {
+                result = "";
+                return result;
+            }
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (char.IsUpper(str[i]))
+                {
+                    result = str.ToLower();
+                    break;
+                }
+                result = str.ToUpper();
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// property that gives access to needsToChange variable.
         /// </summary>
         public bool NeedsToChange
         {
             get { return needsToChange; }
             set { needsToChange = value; }
         }
+
+        /// <summary>
+        /// property that gives access to identifier variable.
+        /// </summary>
         public TS.Identifier Identifier
         {
             get { return identifier; }
             set { identifier = value; }
         }
+
+        /// <summary>
+        /// property that gives access to prefix variable.
+        /// </summary>
         public string Prefix
         {
             get { return prefix; }
             set { prefix = value; }
         }
+
+        /// <summary>
+        /// property that gives access to number variable.
+        /// </summary>
         public int Number
         {
             get { return number; }
             set { number = value; }
         }
+
+        /// <summary>
+        /// property that gives access to isMainPart variable.
+        /// </summary>
         public bool IsMainPart
         {
             get { return isMainPart; }
