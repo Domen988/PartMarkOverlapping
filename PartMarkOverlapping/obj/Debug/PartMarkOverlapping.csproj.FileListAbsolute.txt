@@ -43,3 +43,5 @@ C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.exe.manifest
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.application
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.csprojResolveAssemblyReference.cache
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\MacroBuilder.dll
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\MacroBuilder.pdb

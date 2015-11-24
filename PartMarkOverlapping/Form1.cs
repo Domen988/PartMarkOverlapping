@@ -19,7 +19,10 @@ namespace PartMarkOverlapping
         private void button1_Click(object sender, EventArgs e)
         {
             int quantityOfPartsToBeRenumbered;
-            
+
+            checkNumbering();
+            checkAdvancedOptions();
+
             // cursor wait symbol
             Cursor.Current = Cursors.WaitCursor;
             Application.DoEvents();
@@ -66,17 +69,26 @@ namespace PartMarkOverlapping
                 Environment.Exit(1);
             }
 
+            checkAdvancedOptions();
+            checkNumbering();
+        }
+
+        private void checkNumbering()
+        {
+            if (!TSM.Operations.Operation.IsNumberingUpToDateAll())
+            {
+                MessageBox.Show("Numbering is not up-to-date.", caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
+        }
+
+        private void checkAdvancedOptions()
+        {
             var useAssemblyNumberFor = "";
             TS.TeklaStructuresSettings.GetAdvancedOption("XS_USE_ASSEMBLY_NUMBER_FOR", ref useAssemblyNumberFor);
             if (useAssemblyNumberFor != "MAIN_PART")
             {
                 MessageBox.Show("Advanced option 'XS_USE_ASSEMBLY_NUMBER_FOR' is not set to 'MAIN_PART'.", caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(1);
-            }
-
-            if (!TSM.Operations.Operation.IsNumberingUpToDateAll())
-            {
-                MessageBox.Show("Numbering is not up-to-date.", caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
         }
