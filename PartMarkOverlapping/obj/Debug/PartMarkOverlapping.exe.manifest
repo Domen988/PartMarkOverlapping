@@ -48,22 +48,27 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
-      <assemblyIdentity name="Tekla.Structures.Catalogs" version="20.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="Tekla.Structures.Catalogs" version="21.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
-      <assemblyIdentity name="Tekla.Structures.Datatype" version="20.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="Tekla.Structures.Datatype" version="21.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
-      <assemblyIdentity name="Tekla.Structures.Dialog" version="20.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="Tekla.Structures.Dialog" version="21.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
-      <assemblyIdentity name="Tekla.Structures.Drawing" version="20.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="Tekla.Structures.Drawing" version="21.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Tekla.Structures.Plugins" version="21.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
     </dependentAssembly>
   </dependency>
   <dependency>
@@ -84,19 +89,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Y7WxhXZ4w7tVI0mwCvGkFdMXQNO73VAXW9t/e2kY3Fk=</dsig:DigestValue>
+        <dsig:DigestValue>srT3kNgB8m4JjU612ZLE9QeCZhXxxL6tldaXwTCQHUQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MacroBuilder.dll" size="10752">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MacroBuilder.dll" size="11264">
       <assemblyIdentity name="MacroBuilder" version="17.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>L6qZ4K31iXk+S750p1WwiSDNg1MRhSEMWjEhUYQu6Mg=</dsig:DigestValue>
+        <dsig:DigestValue>I46f1dCAISxBu7kmaHVIjH+BPfVbWgcBRZ36LEyYGKQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -108,19 +113,31 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>apq9H9TstNcYrgE77PJBa5aDQWfGKsLtwsK5pM9GWQ8=</dsig:DigestValue>
+        <dsig:DigestValue>Dtb+adKRWj62iIXhV5P5CXWNWcMs4bmr80jaMxH0xEE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Tekla.Common.Geometry.dll" size="183736">
-      <assemblyIdentity name="Tekla.Common.Geometry" version="4.5.0.0" publicKeyToken="93C0F7E4F1CA9619" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="Tekla.Common.Geometry" version="4.5.1.0" publicKeyToken="93C0F7E4F1CA9619" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Gv9+o1wKyBtSlxsKau0y1ze5KuDQMJ97T0XxT+fl6ZI=</dsig:DigestValue>
+        <dsig:DigestValue>jFfvO7ZK7+lfMyrJdydGG9F1D7QTpqsWVuLijGDlYn0=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Tekla.Common.Geometry.Algorithms.dll" size="22968">
+      <assemblyIdentity name="Tekla.Common.Geometry.Algorithms" version="4.5.0.0" publicKeyToken="93C0F7E4F1CA9619" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>RpiJyAM3yU8lL3GcPZ84J+jkfXn0rV0TCICX//NrO1Y=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -132,31 +149,55 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>MXs8dUyiVNS4MMTrJ4vuAWNz+48iWPUW3IR5QlN+6Po=</dsig:DigestValue>
+        <dsig:DigestValue>00CdUGvF5ybUOfN03Bk20o7Me1JeyGIS2BWHshlcvbc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Tekla.Structures.dll" size="145688">
-      <assemblyIdentity name="Tekla.Structures" version="20.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Tekla.Common.Geometry.Shapes.dll" size="71096">
+      <assemblyIdentity name="Tekla.Common.Geometry.Shapes" version="4.5.0.0" publicKeyToken="93C0F7E4F1CA9619" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>f+MzLh4GjTq3BqngjazOP1CApZsHnN2cae74Z0STlQA=</dsig:DigestValue>
+        <dsig:DigestValue>18VWf4Yboz/0m0EzdoZr/vWPf1B0iUnyPXOuEAzYSpA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Tekla.Structures.Model.dll" size="407832">
-      <assemblyIdentity name="Tekla.Structures.Model" version="20.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Tekla.Common.Geometry.Topology.dll" size="19384">
+      <assemblyIdentity name="Tekla.Common.Geometry.Topology" version="4.5.0.0" publicKeyToken="93C0F7E4F1CA9619" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>cB9mGim2iVpXn10oQAdFqHu/GgNm8zQT9gTX+aeIllw=</dsig:DigestValue>
+        <dsig:DigestValue>PEk88HLfOaJ+GlQeBnlPkHSNVQEyl4G+T+GcdAGkRug=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Tekla.Structures.dll" size="153528">
+      <assemblyIdentity name="Tekla.Structures" version="21.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>VaeMBUarCxfOo10f7kDR014aLlhkfnBrW7LxlXCLGpY=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Tekla.Structures.Model.dll" size="423864">
+      <assemblyIdentity name="Tekla.Structures.Model" version="21.0.0.0" publicKeyToken="2F04DBE497B71114" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>00VGYaSWuwuhnLmjLanhXIq5X1c5lw6xpzSd9c1zGA8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -168,7 +209,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>5WVEzT8/nxoYYusoqNW2D7/51C7u07+6lyU/f2CB5lw=</dsig:DigestValue>
+        <dsig:DigestValue>TPKPh61SNZ+7HgRrBPbycu9JySvLgPzIPmBg1b2TAyg=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Tekla.Technology.Serialization.dll" size="56760">
+      <assemblyIdentity name="Tekla.Technology.Serialization" version="1.0.0.0" publicKeyToken="A70CBA4EF557EE03" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>nZlRKdGVL41N1CZIp66oUjpTbkIp4RphMKKKyl5dGyg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

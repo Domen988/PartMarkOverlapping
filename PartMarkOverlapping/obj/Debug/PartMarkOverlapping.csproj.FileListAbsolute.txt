@@ -44,4 +44,14 @@ C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.application
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Debug\PartMarkOverlapping.csprojResolveAssemblyReference.cache
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\MacroBuilder.dll
-C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\MacroBuilder.pdb
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\Tekla.Common.Geometry.Shapes.dll
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\Tekla.Technology.Serialization.dll
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\Tekla.Common.Geometry.Topology.dll
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\Tekla.Common.Geometry.Algorithms.dll
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\Tekla.Structures.xml
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\Tekla.Structures.Model.xml
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\Tekla.Common.Geometry.Primitives.xml
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\Tekla.Common.Geometry.Shapes.xml
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\Tekla.Common.Geometry.xml
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\Tekla.Common.Geometry.Topology.xml
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Debug\Tekla.Common.Geometry.Algorithms.xml

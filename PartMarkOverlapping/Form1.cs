@@ -78,7 +78,7 @@ namespace PartMarkOverlapping
             if (!TSM.Operations.Operation.IsNumberingUpToDateAll())
             {
                 MessageBox.Show("Numbering is not up-to-date.", caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(1);
+                //Environment.Exit(1);
             }
         }
 

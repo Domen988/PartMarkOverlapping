@@ -7,14 +7,14 @@
     <framework targetVersion="4.5" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="PartMarkOverlapping.exe.manifest" size="10422">
+    <dependentAssembly dependencyType="install" codebase="PartMarkOverlapping.exe.manifest" size="13572">
       <assemblyIdentity name="PartMarkOverlapping.exe" version="1.0.0.1" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>vpL0tPcPg7qnKuU0yTJtekvByjIEY+LwWy1Gqnql/kU=</dsig:DigestValue>
+        <dsig:DigestValue>mI3W1/TVe1LkNScPrynXu6/KtzT9/a54j0t2QmHVY7A=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
