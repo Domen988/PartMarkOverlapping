@@ -18,7 +18,6 @@ C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Releas
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Release\Tekla.Structures.xml
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Release\Tekla.Structures.Model.xml
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Release\Tekla.Common.Geometry.Primitives.xml
-C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Release\PartMarkOverlapping.csprojResolveAssemblyReference.cache
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Release\MacroBuilder.dll
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Release\Tekla.Common.Geometry.Shapes.dll
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Release\Tekla.Common.Geometry.dll
