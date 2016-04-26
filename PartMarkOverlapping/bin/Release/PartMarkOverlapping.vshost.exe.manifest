@@ -106,14 +106,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="PartMarkOverlapping.exe" size="39384">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="PartMarkOverlapping.exe" size="39896">
       <assemblyIdentity name="PartMarkOverlapping" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Tlm63J23xtocYhghrKHMUQRiXNoGwCTHSsAWLlugF8Q=</dsig:DigestValue>
+        <dsig:DigestValue>8tnZxt/YzB+1rp1otLsQvVZ7WE23qh0r400eFmdUPXA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
