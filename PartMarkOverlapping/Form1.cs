@@ -9,7 +9,7 @@ namespace PartMarkOverlapping
     public partial class Form1 : Form
     {
         TSM.Model model = new TSM.Model();
-        private string caption = "Part Mark Overlapping v0.1";
+        private string caption = "Part Mark Overlapping v1.0";
 
         public Form1()
         {
@@ -19,9 +19,13 @@ namespace PartMarkOverlapping
         private void button1_Click(object sender, EventArgs e)
         {
             int quantityOfPartsToBeRenumbered;
-            
+
+            if (!checkNumbering()) return;        // check if numbering is up to date and return if it is not
+            checkAdvancedOptions();  // check if advanced options are set correctly
+
             // cursor wait symbol
             Cursor.Current = Cursors.WaitCursor;
+            
             Application.DoEvents();
 
             PartCustom.SelectAll(model);
@@ -66,17 +70,28 @@ namespace PartMarkOverlapping
                 Environment.Exit(1);
             }
 
+            checkAdvancedOptions();
+            checkNumbering();
+        }
+
+        private bool checkNumbering()
+        {
+            if (!TSM.Operations.Operation.IsNumberingUpToDateAll())
+            {
+                MessageBox.Show("Numbering is not up-to-date.", caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+                //Environment.Exit(1);
+            }
+            return true;
+        }
+
+        private void checkAdvancedOptions()
+        {
             var useAssemblyNumberFor = "";
             TS.TeklaStructuresSettings.GetAdvancedOption("XS_USE_ASSEMBLY_NUMBER_FOR", ref useAssemblyNumberFor);
             if (useAssemblyNumberFor != "MAIN_PART")
             {
                 MessageBox.Show("Advanced option 'XS_USE_ASSEMBLY_NUMBER_FOR' is not set to 'MAIN_PART'.", caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Environment.Exit(1);
-            }
-
-            if (!TSM.Operations.Operation.IsNumberingUpToDateAll())
-            {
-                MessageBox.Show("Numbering is not up-to-date.", caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
         }

@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
+using System.IO;
 
 using System.Text.RegularExpressions;
 
@@ -26,6 +28,7 @@ namespace PartMarkOverlapping
         private bool needsToChange;
         private bool isMainPart;
 
+        private static string modelPath;
         public static Dictionary<string, List<int>> positionsDictionary = new Dictionary<string, List<int>>();
         public static List<PartCustom> partList = new List<PartCustom>();
         public static Dictionary<string, Tuple<string, int>> prefixChanges = new Dictionary<string, Tuple<string, int>>();
@@ -92,11 +95,18 @@ namespace PartMarkOverlapping
         /// <param name="model">Tekla structures model</param>
         public static void SelectAll(TSM.Model model)
         {
+            modelPath = model.GetInfo().ModelPath;
+
             TSM.ModelObjectEnumerator selectedObjects = model.GetModelObjectSelector().GetAllObjectsWithType(TSM.ModelObject.ModelObjectEnum.UNKNOWN);
             System.Type[] objectTypes = new System.Type[1];
             objectTypes.SetValue(typeof(TSM.Part), 0);
 
             selectedObjects = model.GetModelObjectSelector().GetAllObjectsWithType(objectTypes);
+
+            // clear lists - needed for subsequent numbering checks
+            positionsDictionary.Clear();
+            partList.Clear();
+            prefixChanges.Clear();
 
             // creating instances of PartCustom class
             while (selectedObjects.MoveNext())
@@ -158,59 +168,77 @@ namespace PartMarkOverlapping
         /// <param name="model">Tekla.Structures.Model model</param>
         public static void RenumberParts(TSM.Model model)
         {
+            // check if numberinghistory.txt exists and change its name
+            RenameNumberingHistory(model);
+
             foreach (PartCustom part in partList)
             {
                 if (part.NeedsToChange)
                 {
-                    int newNum;
                     string partCurrentPosition;
-                    string oppositePrefix = ChangeCapitalization(part.Prefix);
-
                     partCurrentPosition = part.prefix.ToString() + part.number.ToString();
 
-                    // checks if a part with same position has already been assigned a new number. If so, it gives the current part the same number, if not if gives part a new number.
+                    int newNum;
+                    string oppositePrefix = ChangeCapitalization(part.Prefix);
+
+                    // checks if a part with same position has already been assigned a new number. 
+                    // If so, it skips it --> tekla applies the new number from the first part to all of the same parts
                     // all changes are collected in prefixChanges dictionary.
                     if (!prefixChanges.ContainsKey(partCurrentPosition))
                     {
-                        int maxOppositeNumber = positionsDictionary[oppositePrefix].Max();
-                        int maxNumber = positionsDictionary[part.Prefix].Max();
+                        bool firstGo = true;
 
-                        newNum = Math.Max(maxNumber, maxOppositeNumber) + 1;
+                        do
+                        {
+                            int maxOppositeNumber = positionsDictionary[oppositePrefix].Max();
+                            int maxNumber = positionsDictionary[part.Prefix].Max();
 
-                        // adds new number to prefixChanges dictionary
-                        Tuple<string, int> tuple = new Tuple<string, int>(part.prefix, newNum);
-                        prefixChanges.Add(partCurrentPosition, tuple);
+                            newNum = Math.Max(maxNumber, maxOppositeNumber) + 1;
+
+                            // adds new number to prefixChanges dictionary
+                            Tuple<string, int> tuple = new Tuple<string, int>(part.prefix, newNum);
+
+                            if (firstGo)
+                            {
+                                prefixChanges.Add(partCurrentPosition, tuple);
+                            }
+                            else
+                            {
+                                prefixChanges.Remove(partCurrentPosition);
+                                prefixChanges.Add(partCurrentPosition, tuple);
+                            }
+
+                            // select part - clumsy, could it be improved?
+                            ArrayList aList = new ArrayList();
+                            TSM.Object tPart = model.SelectModelObject(part.Identifier);
+                            TSM.UI.ModelObjectSelector selector = new TSM.UI.ModelObjectSelector();
+                            aList.Add(tPart);
+                            selector.Select(aList);
+
+                            // use Macrobuilder dll to change numbering
+                            MacroBuilder macroBuilder = new MacroBuilder();
+                            macroBuilder.Callback("acmdAssignPositionNumber", "part", "main_frame");
+                            macroBuilder.ValueChange("assign_part_number", "Position", newNum.ToString());
+                            macroBuilder.PushButton("AssignPB", "assign_part_number");
+                            macroBuilder.PushButton("CancelPB", "assign_part_number");
+                            macroBuilder.Run();
+
+                            bool ismacrounning = true;
+                            while (ismacrounning)
+                            {
+                                ismacrounning = TSM.Operations.Operation.IsMacroRunning();
+                            }
+
+                            // check for unsuccesfull number assignment
+                            //AssignmentSuccess = AssignmentSuccesCheck(model);
+
+                            // add newly created part mark to positionsDict
+                            positionsDictionary[part.Prefix].Add(newNum);
+
+                            firstGo = false;
+                        }
+                        while (!AssignmentSuccesCheck(model));
                     }
-                    else
-                    {
-                        newNum = prefixChanges[partCurrentPosition].Item2;
-                    }
-
-                    //MessageBox.Show(maxOppositeNumber.ToString() + "" + maxNumber.ToString() + "" + newNum.ToString());
-
-                    // select part - clumsy, could it be improved?
-                    ArrayList aList = new ArrayList();
-                    TSM.Object tPart = model.SelectModelObject(part.Identifier);
-                    TSM.UI.ModelObjectSelector selector = new TSM.UI.ModelObjectSelector();
-                    aList.Add(tPart);
-                    selector.Select(aList);
-
-                    // use Macrobuilder dll to change numbering
-                    MacroBuilder macroBuilder = new MacroBuilder();
-                    macroBuilder.Callback("acmdAssignPositionNumber", "part", "main_frame");
-                    macroBuilder.ValueChange("assign_part_number", "Position", newNum.ToString());
-                    macroBuilder.PushButton("AssignPB", "assign_part_number");
-                    macroBuilder.PushButton("CancelPB", "assign_part_number");
-                    macroBuilder.Run();
-
-                    bool ismacrounning = true;
-                    while (ismacrounning)
-                    {
-                        ismacrounning = TSM.Operations.Operation.IsMacroRunning();
-                    }
-
-                    // add newly created part mark to positionsDict
-                    positionsDictionary[part.Prefix].Add(newNum);
                 }
             }
         }
@@ -238,6 +266,45 @@ namespace PartMarkOverlapping
                 result = str.ToUpper();
             }
             return result;
+        }
+
+        /// <summary>
+        /// adds datetime string to the old numberinghistory.txt file in order to speed up the overlapping correction
+        /// </summary>
+        internal static void RenameNumberingHistory(TSM.Model model)
+        {            
+            string formatedDate = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss");
+
+            string numHisOld = modelPath + "\\numberinghistory.txt";
+            string numHisNew = modelPath + "\\numberinghistory until " + formatedDate + ".txt";
+
+            try
+            {
+                if (File.Exists(numHisOld))
+                {
+                    File.Move(numHisOld, numHisNew);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// checks if assignment of the new part number succeeded
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>true if yes, false if no</returns>
+        internal static bool AssignmentSuccesCheck(TSM.Model model)
+        {
+            string[] lines = File.ReadAllLines(modelPath + "\\numberinghistory.txt");
+
+            if (lines[lines.Length - 2] == "")
+            {
+                return false;
+            }
+            return true;    
         }
 
         /// <summary>
