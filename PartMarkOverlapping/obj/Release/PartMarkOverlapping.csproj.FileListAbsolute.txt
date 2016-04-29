@@ -28,3 +28,4 @@ C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Releas
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Release\Tekla.Common.Geometry.xml
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Release\Tekla.Common.Geometry.Topology.xml
 C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\bin\Release\Tekla.Common.Geometry.Algorithms.xml
+C:\Users\dza\Documents\GitHub\PartMarkOverlapping\PartMarkOverlapping\obj\Release\PartMarkOverlapping.csprojResolveAssemblyReference.cache

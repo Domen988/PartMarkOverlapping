@@ -52,12 +52,12 @@ namespace PartMarkOverlapping
             // next conditinals scoop out prefix and position numbers without hardcoding the 'part position separator' (it's an option in tekla)
             if (partMark.Contains(partPrefix))
             {
-                actualPartNumber = Regex.Replace(partMark.Remove(0, partPrefix.Length), "[^.0-9]", "");
+                actualPartNumber = Regex.Replace(partMark.Remove(0, partPrefix.Length), "[^0-9]", "");
                 actualPartPrefix = partPrefix;
             }
             else if (partMark.Contains(assemblyPrefix))
             {
-                actualPartNumber = Regex.Replace(partMark.Remove(0, assemblyPrefix.Length), "[^.0-9]", "");
+                actualPartNumber = Regex.Replace(partMark.Remove(0, assemblyPrefix.Length), "[^0-9]", "");
                 actualPartPrefix = assemblyPrefix;
             }
 
@@ -187,6 +187,8 @@ namespace PartMarkOverlapping
                     if (!prefixChanges.ContainsKey(partCurrentPosition))
                     {
                         bool firstGo = true;
+                        string preNumber = string.Empty;
+                        string postNumber = string.Empty;
 
                         do
                         {
@@ -215,6 +217,13 @@ namespace PartMarkOverlapping
                             aList.Add(tPart);
                             selector.Select(aList);
 
+                            TSM.Part myPart = tPart as TSM.Part;
+
+                            // preNumber and postNumber strings are compared in the 'while' of the do-while loop, to determine if Macrobuilder 
+                            // macro was succesfully run. 
+                            // (sometimes Tekla doesn't want to apply certain numbers - e.g.: if they were in use in previous model stages, ... )
+                            preNumber = myPart.GetPartMark();
+
                             // use Macrobuilder dll to change numbering
                             MacroBuilder macroBuilder = new MacroBuilder();
                             macroBuilder.Callback("acmdAssignPositionNumber", "part", "main_frame");
@@ -223,21 +232,22 @@ namespace PartMarkOverlapping
                             macroBuilder.PushButton("CancelPB", "assign_part_number");
                             macroBuilder.Run();
 
+                            postNumber = myPart.GetPartMark();
+
                             bool ismacrounning = true;
                             while (ismacrounning)
                             {
                                 ismacrounning = TSM.Operations.Operation.IsMacroRunning();
                             }
 
-                            // check for unsuccesfull number assignment
-                            //AssignmentSuccess = AssignmentSuccesCheck(model);
-
                             // add newly created part mark to positionsDict
                             positionsDictionary[part.Prefix].Add(newNum);
 
                             firstGo = false;
+
                         }
-                        while (!AssignmentSuccesCheck(model));
+                        //while (!AssignmentSuccesCheck(model));
+                        while (preNumber == postNumber);
                     }
                 }
             }
@@ -292,18 +302,19 @@ namespace PartMarkOverlapping
         }
 
         /// <summary>
-        /// checks if assignment of the new part number succeeded
+        /// OBSOLETE - checks if assignment of the new part number succeeded
         /// </summary>
         /// <param name="model"></param>
         /// <returns>true if yes, false if no</returns>
         internal static bool AssignmentSuccesCheck(TSM.Model model)
         {
             string[] lines = File.ReadAllLines(modelPath + "\\numberinghistory.txt");
-
+            
             if (lines[lines.Length - 2] == "")
             {
                 return false;
             }
+            
             return true;    
         }
 
