@@ -92,11 +92,10 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 149);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(264, 52);
+            this.label3.Size = new System.Drawing.Size(233, 39);
             this.label3.TabIndex = 5;
-            this.label3.Text = "Version 1.0, 13.2.2016\r\n- corrected \"Cannot assign number\" problem\r\n   (the solut" +
-    "ion depends on \'numberinghistory.txt\')\r\n- no need to restart the application on " +
-    "subsequent runs";
+            this.label3.Text = "Version 1.1, 29.4.2016\r\n- check for succsefull renumbering now done in \r\n   model" +
+    " (no more numberinghistory.txt)";
             // 
             // Form1
             // 
@@ -110,7 +109,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
-            this.Text = "Part Mark Overlapping 1.0";
+            this.Text = "Part Mark Overlapping 1.1";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

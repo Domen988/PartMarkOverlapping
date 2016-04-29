@@ -9,7 +9,7 @@ namespace PartMarkOverlapping
     public partial class Form1 : Form
     {
         TSM.Model model = new TSM.Model();
-        private string caption = "Part Mark Overlapping v1.0";
+        private string caption = "Part Mark Overlapping v1.1";
 
         public Form1()
         {
@@ -44,6 +44,7 @@ namespace PartMarkOverlapping
 
                     PartCustom.RenumberParts(model);
                     Cursor.Current = Cursors.Default;
+                    MessageBox.Show("Renunmbering succesfully finished.", caption);
                 }
                 else
                 {
